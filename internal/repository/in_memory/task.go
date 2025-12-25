@@ -33,6 +33,19 @@ func (r *taskRepo) CreateTask(_ context.Context, task *model.Task) (int, error) 
 	return task.ID, nil
 }
 
+func (r *taskRepo) GetAllTasks(_ context.Context) ([]*model.Task, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	tasks := make([]*model.Task, 0, len(r.tasks))
+
+	for _, task := range r.tasks {
+		tasks = append(tasks, task)
+	}
+
+	return tasks, nil
+}
+
 func (r *taskRepo) GetTaskByID(_ context.Context, id int) (*model.Task, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
@@ -71,19 +84,6 @@ func (r *taskRepo) DeleteTask(_ context.Context, id int) error {
 	delete(r.tasks, id)
 
 	return nil
-}
-
-func (r *taskRepo) GetAllTasks(_ context.Context) ([]*model.Task, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	tasks := make([]*model.Task, 0, len(r.tasks))
-
-	for _, task := range r.tasks {
-		tasks = append(tasks, task)
-	}
-
-	return tasks, nil
 }
 
 func (r *taskRepo) IsTaskExistByID(_ context.Context, id int) (bool, error) {

@@ -36,6 +36,19 @@ func (u *taskUsecase) CreateTask(ctx context.Context, task *model.Task) (int, er
 	return id, nil
 }
 
+func (u *taskUsecase) GetAllTasks(ctx context.Context) ([]*model.Task, error) {
+	tasks, err := u.taskRepo.GetAllTasks(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	sort.Slice(tasks, func(i, j int) bool {
+		return tasks[i].ID < tasks[j].ID
+	})
+
+	return tasks, nil
+}
+
 func (u *taskUsecase) GetTaskByID(ctx context.Context, id int) (*model.Task, error) {
 	exist, err := u.taskRepo.IsTaskExistByID(ctx, id)
 	if err != nil {
@@ -92,17 +105,4 @@ func (u *taskUsecase) DeleteTask(ctx context.Context, id int) error {
 	}
 
 	return nil
-}
-
-func (u *taskUsecase) GetAllTasks(ctx context.Context) ([]*model.Task, error) {
-	tasks, err := u.taskRepo.GetAllTasks(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	sort.Slice(tasks, func(i, j int) bool {
-		return tasks[i].ID < tasks[j].ID
-	})
-
-	return tasks, nil
 }
