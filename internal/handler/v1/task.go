@@ -70,8 +70,7 @@ func (h *handler) GetAllTasks(ctx context.Context) http.HandlerFunc {
 
 func (h *handler) GetTaskByID(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		urlParts := strings.Split(r.URL.Path, "/")
-		taskIDstr := strings.TrimSpace(urlParts[len(urlParts)-1])
+		taskIDstr := strings.TrimSpace(r.PathValue("id"))
 
 		taskID, err := strconv.Atoi(taskIDstr)
 		if err != nil {
@@ -103,8 +102,7 @@ func (h *handler) GetTaskByID(ctx context.Context) http.HandlerFunc {
 
 func (h *handler) UpdateTask(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		urlParts := strings.Split(r.URL.Path, "/")
-		taskIDstr := strings.TrimSpace(urlParts[len(urlParts)-1])
+		taskIDstr := strings.TrimSpace(r.PathValue("id"))
 
 		taskID, err := strconv.Atoi(taskIDstr)
 		if err != nil {
@@ -147,8 +145,7 @@ func (h *handler) UpdateTask(ctx context.Context) http.HandlerFunc {
 
 func (h *handler) DeleteTask(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		urlParts := strings.Split(r.URL.Path, "/")
-		taskIDstr := strings.TrimSpace(urlParts[len(urlParts)-1])
+		taskIDstr := strings.TrimSpace(r.PathValue("id"))
 
 		taskID, err := strconv.Atoi(taskIDstr)
 		if err != nil {
