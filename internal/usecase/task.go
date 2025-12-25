@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"sort"
 
 	"github.com/solumD/tasks-service/internal/model"
 )
@@ -98,6 +99,10 @@ func (u *taskUsecase) GetAllTasks(ctx context.Context) ([]*model.Task, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	sort.Slice(tasks, func(i, j int) bool {
+		return tasks[i].ID < tasks[j].ID
+	})
 
 	return tasks, nil
 }

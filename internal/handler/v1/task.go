@@ -75,6 +75,8 @@ func (h *handler) GetTaskByID(ctx context.Context) http.HandlerFunc {
 		taskID, err := strconv.Atoi(taskIDstr)
 		if err != nil {
 			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrInvalidTaskIDType)
+
+			return
 		}
 
 		task, err := h.taskUsecase.GetTaskByID(ctx, taskID)
@@ -86,6 +88,8 @@ func (h *handler) GetTaskByID(ctx context.Context) http.HandlerFunc {
 			}
 
 			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToGetTaskByID)
+
+			return
 		}
 
 		resp := dto.FromTaskToResp(task)
@@ -107,6 +111,8 @@ func (h *handler) UpdateTask(ctx context.Context) http.HandlerFunc {
 		taskID, err := strconv.Atoi(taskIDstr)
 		if err != nil {
 			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrInvalidTaskIDType)
+
+			return
 		}
 
 		var req dto.UpdateTaskReq
@@ -150,6 +156,8 @@ func (h *handler) DeleteTask(ctx context.Context) http.HandlerFunc {
 		taskID, err := strconv.Atoi(taskIDstr)
 		if err != nil {
 			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrInvalidTaskIDType)
+
+			return
 		}
 
 		err = h.taskUsecase.DeleteTask(ctx, taskID)
