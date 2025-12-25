@@ -1,0 +1,79 @@
+package inmemory
+
+import (
+	"context"
+	"sync"
+
+	"github.com/solumD/tasks-service/internal/model"
+)
+
+type taskRepo struct {
+	tasks map[int]*model.Task
+
+	mu *sync.RWMutex
+}
+
+func NewTaskRepo() *taskRepo {
+	return &taskRepo{
+		tasks: make(map[int]*model.Task),
+		mu:    &sync.RWMutex{},
+	}
+}
+
+func (r *taskRepo) CreateTask(_ context.Context, task *model.Task) (int, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	r.tasks[task.ID] = task
+
+	return task.ID, nil
+}
+
+func (r *taskRepo) GetTaskByID(_ context.Context, id int) (*model.Task, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	task := r.tasks[id]
+
+	return task, nil
+}
+
+func (r taskRepo) UpdateTask(_ context.Context, task *model.Task) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	r.tasks[task.ID] = task
+
+	return nil
+}
+
+func (r *taskRepo) DeleteTask(_ context.Context, id int) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	delete(r.tasks, id)
+
+	return nil
+}
+
+func (r *taskRepo) GetAllTasks(_ context.Context) ([]*model.Task, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	tasks := make([]*model.Task, 0, len(r.tasks))
+
+	for _, task := range r.tasks {
+		tasks = append(tasks, task)
+	}
+
+	return tasks, nil
+}
+
+func (r *taskRepo) IsTaskExistByID(_ context.Context, id int) (bool, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	_, exist := r.tasks[id]
+
+	return exist, nil
+}
