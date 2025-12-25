@@ -10,13 +10,15 @@ import (
 type taskRepo struct {
 	tasks map[int]*model.Task
 
-	mu *sync.RWMutex
+	mu        *sync.RWMutex
+	idCounter int
 }
 
 func NewTaskRepo() *taskRepo {
 	return &taskRepo{
-		tasks: make(map[int]*model.Task),
-		mu:    &sync.RWMutex{},
+		tasks:     make(map[int]*model.Task),
+		mu:        &sync.RWMutex{},
+		idCounter: 0,
 	}
 }
 
@@ -24,6 +26,8 @@ func (r *taskRepo) CreateTask(_ context.Context, task *model.Task) (int, error) 
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
+	r.idCounter++
+	task.ID = r.idCounter
 	r.tasks[task.ID] = task
 
 	return task.ID, nil
