@@ -2,6 +2,7 @@ package v1
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/solumD/tasks-service/internal/handler/v1/dto"
@@ -10,6 +11,16 @@ import (
 const (
 	contentTypeEmpty = ""
 	contentTypeJSON  = "application/json"
+)
+
+var (
+	ErrFailedToDecodeReq   = errors.New("failed to decode request")
+	ErrFailedToCreateTask  = errors.New("failed to create task")
+	ErrFailedToGetTaskByID = errors.New("failed to get task by id")
+	ErrFailedToUpdateTask  = errors.New("failed to update task")
+	ErrFailedToDeleteTask  = errors.New("failed to delete task")
+	ErrFailedToGetAllTasks = errors.New("failed to get all tasks")
+	ErrInvalidTaskIDType   = errors.New("invalid task id type")
 )
 
 type handler struct {
