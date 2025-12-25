@@ -2,8 +2,14 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	"github.com/solumD/tasks-service/internal/model"
+)
+
+var (
+	ErrEmptyTitle   = errors.New("task title is empty")
+	ErrTaskNotFound = errors.New("task not found")
 )
 
 type taskUsecase struct {
