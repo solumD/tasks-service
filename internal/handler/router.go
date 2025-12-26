@@ -8,14 +8,6 @@ import (
 	"github.com/solumD/tasks-service/pkg/middleware"
 )
 
-type Handler interface {
-	CreateTask(ctx context.Context) http.HandlerFunc
-	GetAllTasks(ctx context.Context) http.HandlerFunc
-	GetTaskByID(ctx context.Context) http.HandlerFunc
-	UpdateTask(ctx context.Context) http.HandlerFunc
-	DeleteTask(ctx context.Context) http.HandlerFunc
-}
-
 func NewRouter(ctx context.Context, log *slog.Logger, handler Handler) *http.ServeMux {
 	r := http.NewServeMux()
 	loggerMW := middleware.NewMWLogger(log)
