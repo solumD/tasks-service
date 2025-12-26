@@ -13,15 +13,21 @@ const (
 
 	httpServerHostEnv = "HTTP_SERVER_HOST"
 	httpServerPortEnv = "HTTP_SERVER_PORT"
+	loggerLevelEnv    = "LOGGER_LEVEL"
 )
 
 type Config struct {
-	httpServerHost string `env:"HTTP_SERVER_HOST"`
-	httpServerPort string `env:"HTTP_SERVER_PORT"`
+	httpServerHost string
+	httpServerPort string
+	loggerLevel    string
 }
 
 func (cfg *Config) ServerAddr() string {
 	return net.JoinHostPort(cfg.httpServerHost, cfg.httpServerPort)
+}
+
+func (c *Config) LoggerLevel() string {
+	return c.loggerLevel
 }
 
 func MustLoad() *Config {
@@ -40,8 +46,14 @@ func MustLoad() *Config {
 		log.Fatal("server port not found")
 	}
 
+	loggerLevel := os.Getenv(loggerLevelEnv)
+	if len(loggerLevel) == 0 {
+		log.Fatal("logger level not found")
+	}
+
 	return &Config{
 		httpServerHost: serverHost,
 		httpServerPort: serverPort,
+		loggerLevel:    loggerLevel,
 	}
 }
