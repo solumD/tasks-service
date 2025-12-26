@@ -97,8 +97,10 @@ func (h *handler) GetTaskByID(ctx context.Context) http.HandlerFunc {
 
 		log.Info("new request")
 
-		taskIDstr := strings.TrimSpace(r.PathValue("id"))
-		taskID, err := strconv.Atoi(taskIDstr)
+		pathParts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+		taskIDStr := pathParts[len(pathParts)-1]
+
+		taskID, err := strconv.Atoi(taskIDStr)
 		if err != nil {
 			log.Error("failed to get task id from path", logger.Error(err))
 
@@ -145,8 +147,10 @@ func (h *handler) UpdateTask(ctx context.Context) http.HandlerFunc {
 
 		log.Info("new request")
 
-		taskIDstr := strings.TrimSpace(r.PathValue("id"))
-		taskID, err := strconv.Atoi(taskIDstr)
+		pathParts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+		taskIDStr := pathParts[len(pathParts)-1]
+
+		taskID, err := strconv.Atoi(taskIDStr)
 		if err != nil {
 			log.Error("failed to get task id from path", logger.Error(err))
 
@@ -204,9 +208,10 @@ func (h *handler) DeleteTask(ctx context.Context) http.HandlerFunc {
 
 		log.Info("new request")
 
-		taskIDstr := strings.TrimSpace(r.PathValue("id"))
+		pathParts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+		taskIDStr := pathParts[len(pathParts)-1]
 
-		taskID, err := strconv.Atoi(taskIDstr)
+		taskID, err := strconv.Atoi(taskIDStr)
 		if err != nil {
 			log.Error("failed to get task id from path", logger.Error(err))
 

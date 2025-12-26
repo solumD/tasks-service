@@ -7,31 +7,25 @@ import (
 )
 
 type MockTaskRepo struct {
-
 	CreateTaskFunc   func(ctx context.Context, task *model.Task) (int, error)
 	CreateTaskCalled bool
 	CreateTaskTask   *model.Task
 
-	// GetAllTasks
 	GetAllTasksFunc   func(ctx context.Context) ([]*model.Task, error)
 	GetAllTasksCalled bool
 
-	// GetTaskByID
 	GetTaskByIDFunc   func(ctx context.Context, id int) (*model.Task, error)
 	GetTaskByIDCalled bool
 	GetTaskByIDID     int
 
-	// UpdateTask
 	UpdateTaskFunc   func(ctx context.Context, task *model.Task) error
 	UpdateTaskCalled bool
 	UpdateTaskTask   *model.Task
 
-	// DeleteTask
 	DeleteTaskFunc   func(ctx context.Context, id int) error
 	DeleteTaskCalled bool
 	DeleteTaskID     int
 
-	// IsTaskExistByID
 	IsTaskExistByIDFunc   func(ctx context.Context, id int) (bool, error)
 	IsTaskExistByIDCalled bool
 	IsTaskExistByIDID     int
