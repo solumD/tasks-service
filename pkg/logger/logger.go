@@ -49,9 +49,30 @@ func NewLogger(loggerLevel string) *slog.Logger {
 	return log
 }
 
-func Err(err error) slog.Attr {
+func Error(err error) slog.Attr {
 	return slog.Attr{
 		Key:   "error",
 		Value: slog.StringValue(err.Error()),
+	}
+}
+
+func String(key string, value string) slog.Attr {
+	return slog.Attr{
+		Key:   key,
+		Value: slog.StringValue(value),
+	}
+}
+
+func Int(key string, value int) slog.Attr {
+	return slog.Attr{
+		Key:   key,
+		Value: slog.IntValue(value),
+	}
+}
+
+func Any(key string, value any) slog.Attr {
+	return slog.Attr{
+		Key:   key,
+		Value: slog.AnyValue(value),
 	}
 }

@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"sort"
 
 	"github.com/solumD/tasks-service/internal/model"
@@ -15,11 +16,13 @@ var (
 
 type taskUsecase struct {
 	taskRepo TaskRepo
+	log      *slog.Logger
 }
 
-func NewTaskUsecase(taskRepo TaskRepo) *taskUsecase {
+func NewTaskUsecase(taskRepo TaskRepo, log *slog.Logger) *taskUsecase {
 	return &taskUsecase{
 		taskRepo: taskRepo,
+		log:      log,
 	}
 }
 

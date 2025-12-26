@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
@@ -30,14 +29,14 @@ func InitAndRun(ctx context.Context) {
 	log := logger.NewLogger(cfg.LoggerLevel())
 
 	taskRepo := inmemory.NewTaskRepo()
-	taskUsecase := usecase.NewTaskUsecase(taskRepo)
-	handler := v1.NewHandler(taskUsecase)
+	taskUsecase := usecase.NewTaskUsecase(taskRepo, log)
+	handler := v1.NewHandler(taskUsecase, log)
 
 	r := hnd.NewRouter(ctx, log, handler)
 
 	server := httpserver.New(cfg.ServerAddr(), r)
 	server.Run()
-	log.Info("starting server", slog.String("server address", cfg.ServerAddr()))
+	log.Info("starting server", logger.String("server address", cfg.ServerAddr()))
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
@@ -50,6 +49,6 @@ func InitAndRun(ctx context.Context) {
 
 	err := server.Shutdown(shutdownCtx)
 	if err != nil {
-		log.Error("error while shutting down server", logger.Err(err))
+		log.Error("error while shutting down server", logger.Error(err))
 	}
 }

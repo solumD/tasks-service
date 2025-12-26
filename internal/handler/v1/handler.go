@@ -3,6 +3,7 @@ package v1
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/solumD/tasks-service/internal/handler/v1/dto"
@@ -25,11 +26,13 @@ var (
 
 type handler struct {
 	taskUsecase TaskUsecase
+	log         *slog.Logger
 }
 
-func NewHandler(taskUsecase TaskUsecase) *handler {
+func NewHandler(taskUsecase TaskUsecase, log *slog.Logger) *handler {
 	return &handler{
 		taskUsecase: taskUsecase,
+		log:         log,
 	}
 }
 

@@ -10,38 +10,51 @@ import (
 
 	"github.com/solumD/tasks-service/internal/handler/v1/dto"
 	"github.com/solumD/tasks-service/internal/usecase"
+	"github.com/solumD/tasks-service/pkg/logger"
 )
 
 func (h *handler) CreateTask(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		const fn = "handler.CreateTask"
+		log := h.log.With(logger.String("fn", fn))
+
+		log.Info("new request")
+
 		var req dto.CreateTaskReq
-
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrFailedToDecodeReq)
+			log.Error("failed to decode request", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrFailedToDecodeReq)
 			return
 		}
+
+		log.Info("decoded request", logger.Any("request body", req))
 
 		id, err := h.taskUsecase.CreateTask(ctx, dto.FromCreateReqToTask(req))
 		if err != nil {
 			if errors.Is(err, usecase.ErrEmptyTitle) {
-				h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, err)
+				log.Error("failed to create task", logger.Error(err))
 
+				h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, err)
 				return
 			}
 
-			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToCreateTask)
+			log.Error("failed to create task", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToCreateTask)
 			return
 		}
 
 		resp := &dto.CreateTaskResp{ID: id}
 		respBody, err := json.Marshal(resp)
 		if err != nil {
-			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToCreateTask)
+			log.Error("failed to marshal response", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToCreateTask)
 			return
 		}
+
+		log.Info("created task", logger.Int("task id", id))
 
 		h.response(w, contentTypeJSON, http.StatusCreated, respBody)
 	}
@@ -49,20 +62,29 @@ func (h *handler) CreateTask(ctx context.Context) http.HandlerFunc {
 
 func (h *handler) GetAllTasks(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		const fn = "handler.GetAllTasks"
+		log := h.log.With(logger.String("fn", fn))
+
+		log.Info("new request")
+
 		tasks, err := h.taskUsecase.GetAllTasks(ctx)
 		if err != nil {
-			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToGetAllTasks)
+			log.Error("failed to get all tasks", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToGetAllTasks)
 			return
 		}
 
 		resp := dto.FromTasksListToResp(tasks)
 		respBody, err := json.Marshal(resp)
 		if err != nil {
-			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToGetAllTasks)
+			log.Error("failed to marshal response", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToGetAllTasks)
 			return
 		}
+
+		log.Info("got all tasks", logger.Int("tasks count", len(tasks)))
 
 		h.response(w, contentTypeJSON, http.StatusOK, respBody)
 	}
@@ -70,35 +92,47 @@ func (h *handler) GetAllTasks(ctx context.Context) http.HandlerFunc {
 
 func (h *handler) GetTaskByID(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		taskIDstr := strings.TrimSpace(r.PathValue("id"))
+		const fn = "handler.GetTaskByID"
+		log := h.log.With(logger.String("fn", fn))
 
+		log.Info("new request")
+
+		taskIDstr := strings.TrimSpace(r.PathValue("id"))
 		taskID, err := strconv.Atoi(taskIDstr)
 		if err != nil {
-			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrInvalidTaskIDType)
+			log.Error("failed to get task id from path", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrInvalidTaskIDType)
 			return
 		}
+
+		log.Info("got task id from path", logger.Int("task id", taskID))
 
 		task, err := h.taskUsecase.GetTaskByID(ctx, taskID)
 		if err != nil {
 			if errors.Is(err, usecase.ErrTaskNotFound) {
-				h.errorResponse(w, contentTypeJSON, http.StatusNotFound, err)
+				log.Error("failed to get task by id", logger.Error(err))
 
+				h.errorResponse(w, contentTypeJSON, http.StatusNotFound, err)
 				return
 			}
 
-			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToGetTaskByID)
+			log.Error("failed to get task by id", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToGetTaskByID)
 			return
 		}
 
 		resp := dto.FromTaskToResp(task)
 		respBody, err := json.Marshal(resp)
 		if err != nil {
-			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToGetTaskByID)
+			log.Error("failed to marshal response", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToGetTaskByID)
 			return
 		}
+
+		log.Info("got task by id", logger.Int("task id", task.ID))
 
 		h.response(w, contentTypeJSON, http.StatusOK, respBody)
 	}
@@ -106,22 +140,31 @@ func (h *handler) GetTaskByID(ctx context.Context) http.HandlerFunc {
 
 func (h *handler) UpdateTask(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		taskIDstr := strings.TrimSpace(r.PathValue("id"))
+		const fn = "handler.UpdateTask"
+		log := h.log.With(logger.String("fn", fn))
 
+		log.Info("new request")
+
+		taskIDstr := strings.TrimSpace(r.PathValue("id"))
 		taskID, err := strconv.Atoi(taskIDstr)
 		if err != nil {
-			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrInvalidTaskIDType)
+			log.Error("failed to get task id from path", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrInvalidTaskIDType)
 			return
 		}
+
+		log.Info("got task id from path", logger.Int("task id", taskID))
 
 		var req dto.UpdateTaskReq
-
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrFailedToDecodeReq)
+			log.Error("failed to decode request", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrFailedToDecodeReq)
 			return
 		}
+
+		log.Info("decoded request", logger.Any("request body", req))
 
 		task := dto.FromUpdateReqToTask(req)
 		task.ID = taskID
@@ -129,21 +172,26 @@ func (h *handler) UpdateTask(ctx context.Context) http.HandlerFunc {
 		err = h.taskUsecase.UpdateTask(ctx, task)
 		if err != nil {
 			if errors.Is(err, usecase.ErrEmptyTitle) {
-				h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, err)
+				log.Error("failed to update task", logger.Error(err))
 
+				h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, err)
 				return
 			}
 
 			if errors.Is(err, usecase.ErrTaskNotFound) {
-				h.errorResponse(w, contentTypeJSON, http.StatusNotFound, err)
+				log.Error("failed to update task", logger.Error(err))
 
+				h.errorResponse(w, contentTypeJSON, http.StatusNotFound, err)
 				return
 			}
 
-			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToUpdateTask)
+			log.Error("failed to update task", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToUpdateTask)
 			return
 		}
+
+		log.Info("updated task", logger.Int("task id", task.ID))
 
 		h.response(w, contentTypeJSON, http.StatusOK, nil)
 	}
@@ -151,27 +199,39 @@ func (h *handler) UpdateTask(ctx context.Context) http.HandlerFunc {
 
 func (h *handler) DeleteTask(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		const fn = "handler.DeleteTask"
+		log := h.log.With(logger.String("fn", fn))
+
+		log.Info("new request")
+
 		taskIDstr := strings.TrimSpace(r.PathValue("id"))
 
 		taskID, err := strconv.Atoi(taskIDstr)
 		if err != nil {
-			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrInvalidTaskIDType)
+			log.Error("failed to get task id from path", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusBadRequest, ErrInvalidTaskIDType)
 			return
 		}
+
+		log.Info("got task id from path", logger.Int("task id", taskID))
 
 		err = h.taskUsecase.DeleteTask(ctx, taskID)
 		if err != nil {
 			if errors.Is(err, usecase.ErrTaskNotFound) {
-				h.errorResponse(w, contentTypeJSON, http.StatusNotFound, err)
+				log.Error("failed to delete task", logger.Error(err))
 
+				h.errorResponse(w, contentTypeJSON, http.StatusNotFound, err)
 				return
 			}
 
-			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToDeleteTask)
+			log.Error("failed to delete task", logger.Error(err))
 
+			h.errorResponse(w, contentTypeJSON, http.StatusInternalServerError, ErrFailedToDeleteTask)
 			return
 		}
+
+		log.Info("deleted task", logger.Int("task id", taskID))
 
 		h.response(w, contentTypeJSON, http.StatusOK, nil)
 	}
