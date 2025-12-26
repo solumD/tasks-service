@@ -14,27 +14,27 @@ func NewRouter(ctx context.Context, log *slog.Logger, handler Handler) *http.Ser
 	loggerMW := middleware.NewMWLogger(log)
 
 	r.Handle(
-		"POST /tasks",
+		"POST /todos",
 		loggerMW(http.HandlerFunc(handler.CreateTask(ctx))),
 	)
 
 	r.Handle(
-		"GET /tasks",
+		"GET /todos",
 		loggerMW(http.HandlerFunc(handler.GetAllTasks(ctx))),
 	)
 
 	r.Handle(
-		"GET /tasks/{id}",
+		"GET /todos/{id}",
 		loggerMW(http.HandlerFunc(handler.GetTaskByID(ctx))),
 	)
 
 	r.Handle(
-		"PUT /tasks/{id}",
+		"PUT /todos/{id}",
 		loggerMW(http.HandlerFunc(handler.UpdateTask(ctx))),
 	)
 
 	r.Handle(
-		"DELETE /tasks/{id}",
+		"DELETE /todos/{id}",
 		loggerMW(http.HandlerFunc(handler.DeleteTask(ctx))),
 	)
 

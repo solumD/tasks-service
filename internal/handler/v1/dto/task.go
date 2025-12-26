@@ -31,5 +31,5 @@ type TaskDTO struct {
 }
 
 type GetAllTasksResp struct {
-	Tasks []*TaskDTO `json:"tasks"`
+	Tasks []*TaskDTO `json:"todos"`
 }
