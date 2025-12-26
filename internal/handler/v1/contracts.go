@@ -6,6 +6,7 @@ import (
 	"github.com/solumD/tasks-service/internal/model"
 )
 
+// TaskUsecase интерфейс изкейса Task
 type TaskUsecase interface {
 	CreateTask(ctx context.Context, task *model.Task) (int, error)
 	GetAllTasks(ctx context.Context) ([]*model.Task, error)

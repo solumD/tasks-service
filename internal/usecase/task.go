@@ -27,6 +27,7 @@ func NewTaskUsecase(taskRepo TaskRepo, log *slog.Logger) *taskUsecase {
 	}
 }
 
+// CreateTask создает новую задачу и возвращает ее ID
 func (u *taskUsecase) CreateTask(ctx context.Context, task *model.Task) (int, error) {
 	const fn = "taskUsecase.CreateTask"
 	log := u.log.With(logger.String("fn", fn))
@@ -47,6 +48,7 @@ func (u *taskUsecase) CreateTask(ctx context.Context, task *model.Task) (int, er
 	return id, nil
 }
 
+// GetAllTasks возвращает все задачи
 func (u *taskUsecase) GetAllTasks(ctx context.Context) ([]*model.Task, error) {
 	const fn = "taskUsecase.GetAllTasks"
 	log := u.log.With(logger.String("fn", fn))
@@ -67,6 +69,7 @@ func (u *taskUsecase) GetAllTasks(ctx context.Context) ([]*model.Task, error) {
 	return tasks, nil
 }
 
+// GetTaskByID возвращает задачу по ID
 func (u *taskUsecase) GetTaskByID(ctx context.Context, id int) (*model.Task, error) {
 	const fn = "taskUsecase.GetTaskByID"
 	log := u.log.With(logger.String("fn", fn))
@@ -94,6 +97,7 @@ func (u *taskUsecase) GetTaskByID(ctx context.Context, id int) (*model.Task, err
 	return task, nil
 }
 
+// UpdateTask обновляет задачу
 func (u *taskUsecase) UpdateTask(ctx context.Context, task *model.Task) error {
 	const fn = "taskUsecase.UpdateTask"
 	log := u.log.With(logger.String("fn", fn))
@@ -125,6 +129,7 @@ func (u *taskUsecase) UpdateTask(ctx context.Context, task *model.Task) error {
 	return nil
 }
 
+// DeleteTask удаляет задачу
 func (u *taskUsecase) DeleteTask(ctx context.Context, id int) error {
 	const fn = "taskUsecase.DeleteTask"
 	log := u.log.With(logger.String("fn", fn))

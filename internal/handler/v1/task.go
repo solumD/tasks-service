@@ -13,6 +13,7 @@ import (
 	"github.com/solumD/tasks-service/pkg/logger"
 )
 
+// CreateTask обрабатывает запрос на создание новой задачи
 func (h *handler) CreateTask(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const fn = "handler.CreateTask"
@@ -60,6 +61,7 @@ func (h *handler) CreateTask(ctx context.Context) http.HandlerFunc {
 	}
 }
 
+// GetAllTasks обрабатывает запрос на получение всех задач
 func (h *handler) GetAllTasks(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const fn = "handler.GetAllTasks"
@@ -90,6 +92,7 @@ func (h *handler) GetAllTasks(ctx context.Context) http.HandlerFunc {
 	}
 }
 
+// GetTaskByID обрабатывает запрос на получение задачи по id
 func (h *handler) GetTaskByID(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const fn = "handler.GetTaskByID"
@@ -140,6 +143,7 @@ func (h *handler) GetTaskByID(ctx context.Context) http.HandlerFunc {
 	}
 }
 
+// UpdateTask обрабатывает запрос на обновление задачи
 func (h *handler) UpdateTask(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const fn = "handler.UpdateTask"
@@ -201,6 +205,7 @@ func (h *handler) UpdateTask(ctx context.Context) http.HandlerFunc {
 	}
 }
 
+// DeleteTask обрабатывает запрос на удаление задачи
 func (h *handler) DeleteTask(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const fn = "handler.DeleteTask"

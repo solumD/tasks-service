@@ -16,6 +16,7 @@ func (w *statusResponseWriter) WriteHeader(code int) {
 	w.ResponseWriter.WriteHeader(code)
 }
 
+// NewMWLogger возвращает middleware, который логирует информацию о запросе
 func NewMWLogger(log *slog.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		logger := log.With(

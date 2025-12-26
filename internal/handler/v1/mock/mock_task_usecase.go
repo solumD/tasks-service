@@ -6,6 +6,7 @@ import (
 	"github.com/solumD/tasks-service/internal/model"
 )
 
+// MockTaskUsecase мок юзкейса Task
 type MockTaskUsecase struct {
 	CreateTaskFunc   func(ctx context.Context, task *model.Task) (int, error)
 	CreateTaskCalled bool

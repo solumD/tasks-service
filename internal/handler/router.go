@@ -8,6 +8,7 @@ import (
 	"github.com/solumD/tasks-service/pkg/middleware"
 )
 
+// NewRouter возвращает роутер для обработки запросов
 func NewRouter(ctx context.Context, log *slog.Logger, handler Handler) *http.ServeMux {
 	r := http.NewServeMux()
 	loggerMW := middleware.NewMWLogger(log)

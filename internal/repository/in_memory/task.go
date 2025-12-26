@@ -22,6 +22,7 @@ func NewTaskRepo() *taskRepo {
 	}
 }
 
+// CreateTask создает новую задачу в хранилище
 func (r *taskRepo) CreateTask(_ context.Context, task *model.Task) (int, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -33,6 +34,7 @@ func (r *taskRepo) CreateTask(_ context.Context, task *model.Task) (int, error) 
 	return task.ID, nil
 }
 
+// GetAllTasks возвращает все задачи из хранилища
 func (r *taskRepo) GetAllTasks(_ context.Context) ([]*model.Task, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
@@ -46,6 +48,7 @@ func (r *taskRepo) GetAllTasks(_ context.Context) ([]*model.Task, error) {
 	return tasks, nil
 }
 
+// GetTaskByID возвращает задачу по ID из хранилища
 func (r *taskRepo) GetTaskByID(_ context.Context, id int) (*model.Task, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
@@ -55,6 +58,7 @@ func (r *taskRepo) GetTaskByID(_ context.Context, id int) (*model.Task, error) {
 	return task, nil
 }
 
+// UpdateTask обновляет задачу в хранилище
 func (r taskRepo) UpdateTask(_ context.Context, task *model.Task) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -77,6 +81,7 @@ func (r taskRepo) UpdateTask(_ context.Context, task *model.Task) error {
 	return nil
 }
 
+// DeleteTask удаляет задачу из хранилища
 func (r *taskRepo) DeleteTask(_ context.Context, id int) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()

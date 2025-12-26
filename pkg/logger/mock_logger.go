@@ -5,10 +5,12 @@ import (
 	"log/slog"
 )
 
+// NewMockLogger возвращает логгер с мок-обработчиком
 func NewMockLogger() *slog.Logger {
 	return slog.New(NewMockHandler())
 }
 
+// MockHandler мок-обработчик
 type MockHandler struct{}
 
 func NewMockHandler() *MockHandler {

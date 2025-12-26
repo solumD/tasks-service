@@ -16,20 +16,24 @@ const (
 	loggerLevelEnv    = "LOGGER_LEVEL"
 )
 
+// Config конфиг
 type Config struct {
 	httpServerHost string
 	httpServerPort string
 	loggerLevel    string
 }
 
+// ServerAddr возвращает адрес сервера
 func (cfg *Config) ServerAddr() string {
 	return net.JoinHostPort(cfg.httpServerHost, cfg.httpServerPort)
 }
 
+// LoggerLevel возвращает уровень логирования
 func (c *Config) LoggerLevel() string {
 	return c.loggerLevel
 }
 
+// MustLoad загружает конфиг из файла .env
 func MustLoad() *Config {
 	err := env.LoadEnv(configPath)
 	if err != nil {

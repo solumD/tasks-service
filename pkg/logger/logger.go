@@ -12,6 +12,7 @@ const (
 	levelError string = "error"
 )
 
+// NewLogger возвращает новый логгер согласно уровню логирования
 func NewLogger(loggerLevel string) *slog.Logger {
 	var log *slog.Logger
 
@@ -49,6 +50,7 @@ func NewLogger(loggerLevel string) *slog.Logger {
 	return log
 }
 
+// Error возвращает аттрибут с ошибкой (обертка)
 func Error(err error) slog.Attr {
 	return slog.Attr{
 		Key:   "error",
@@ -56,6 +58,7 @@ func Error(err error) slog.Attr {
 	}
 }
 
+// String возвращает аттрибут со строкой (обертка)
 func String(key string, value string) slog.Attr {
 	return slog.Attr{
 		Key:   key,
@@ -63,6 +66,7 @@ func String(key string, value string) slog.Attr {
 	}
 }
 
+// Int возвращает аттрибут с числом (обертка)
 func Int(key string, value int) slog.Attr {
 	return slog.Attr{
 		Key:   key,
@@ -70,6 +74,7 @@ func Int(key string, value int) slog.Attr {
 	}
 }
 
+// Any возвращает аттрибут с любым значением (обертка)
 func Any(key string, value any) slog.Attr {
 	return slog.Attr{
 		Key:   key,

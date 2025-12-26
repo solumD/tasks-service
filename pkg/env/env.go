@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// LoadEnv загружает переменные окружения из файла .env
 func LoadEnv(path string) error {
 	file, err := os.Open(path)
 	if err != nil {

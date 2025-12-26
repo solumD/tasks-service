@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// Handler интерфейс обработчика
 type Handler interface {
 	CreateTask(ctx context.Context) http.HandlerFunc
 	GetAllTasks(ctx context.Context) http.HandlerFunc
