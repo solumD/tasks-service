@@ -9,7 +9,6 @@
 ```bash
  git clone github.com/solumD/tasks-service
  cd tasks-service/
- go mod tidy
 ```
 
 ## Запуск
