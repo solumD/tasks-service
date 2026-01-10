@@ -63,20 +63,7 @@ func (r taskRepo) UpdateTask(_ context.Context, task *model.Task) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	oldTask := r.tasks[task.ID]
-	if len(task.Title) > 0 {
-		oldTask.Title = task.Title
-	}
-
-	if len(task.Description) > 0 {
-		oldTask.Description = task.Description
-	}
-
-	if task.Done {
-		oldTask.Done = task.Done
-	}
-
-	r.tasks[oldTask.ID] = oldTask
+	r.tasks[task.ID] = task
 
 	return nil
 }
